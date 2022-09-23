@@ -7,16 +7,14 @@ var reciter = document.querySelector("#aq-reciter");
 var language = document.querySelector("#aq-language");
 var chapter = document.querySelector("#aq-chapter");
 var audioPlayer = document.querySelector("#aq-player");
-var selectedReciter = "ur.khan";
+var allReciters = [];
+var selectedReciter = {
+    "identifier": "ar.alafasy"
+}
 var currentSurah = {
-  "number":113
+  "number":108
 };
 var currentVerse = 1;
-
-audioPlayer.addEventListener("ended",function(e){
-    audioPlayer.setAttribute("autoplay","")
-    playAudio();
-});
 
 const chapters = [
   {
@@ -487,12 +485,10 @@ function populateDropdowns() {
     }
 
     let data = JSON.parse(req.responseText).data;
+    allReciters = data;
+
     let lang = "";
     for(d of data) {
-      // listing reciters of Quran
-      let reciter_opt = "<option value="+d.identifier+">"+d.englishName+"</option>";
-      reciter.insertAdjacentHTML("beforeend",reciter_opt);
-
       // listing availabe languages for audio recitation
       if(d.language!=lang) {
         lang = d.language;
@@ -514,29 +510,95 @@ function populateDropdowns() {
 
 function getAudioQuran() {
   let req = new XMLHttpRequest();
-  req.open("GET","https://api.alquran.cloud/v1/surah/"+currentSurah.number+"/"+selectedReciter);
+  req.open("GET","https://api.alquran.cloud/v1/surah/"+currentSurah.number+"/"+selectedReciter.identifier);
   req.send();
   req.onprogress = function(){
     if(req.status==404) {
       return;
     }
 
-    console.log(req.responseText)
     let data = JSON.parse(req.responseText).data;
     currentSurah = data;
-    audioPlayer.setAttribute("src",data.ayahs[currentVerse-1].audio);
-    currentVerse++;
+    currentVerse = 1;
+    playAudio();
+    console.log(data)
   }
 }
 
 function playAudio() {
-    if(currentVerse<currentSurah.numberOfAyahs) {
-        currentVerse = currentSurah.ayahs[currentVerse-1].numberInSurah+1;
+    let surahName = document.querySelector("#aq-chapter-name");
+    let surahVerse = document.querySelector("#aq-chapter-verse");
+    let qariName = document.querySelector("#aq-reciter-name");
+    let qiratLanguage = document.querySelector("#aq-language-name");
+
+    surahName.innerHTML = "<div>"+currentSurah.name + " - " + currentSurah.englishName + " - " + currentSurah.englishNameTranslation + "</div>\
+    <div>\
+        <div>chapter: "+currentSurah.number+"</div>\
+        <div>total verses: "+currentSurah.numberOfAyahs+"</div>\
+        <div style='color:dodgerblue;'>"+currentSurah.revelationType+"</div>\
+    </div>";
+
+        
+    if(currentVerse<=currentSurah.numberOfAyahs) {
+        surahVerse.innerHTML = "<div>"+currentSurah.ayahs[currentVerse-1].text+"</div>\
+        <div class='aq-verse-info'>\
+            <div>verse: "+currentVerse+"</div>\
+            <div>"+((currentSurah.ayahs[currentVerse-1].sajda)?'Sajda':'')+"</div>\
+            <div>Juz: "+currentSurah.ayahs[currentVerse-1].juz+"\
+        </div>";
+
         audioPlayer.setAttribute("src",currentSurah.ayahs[currentVerse-1].audio);
+        currentVerse = currentSurah.ayahs[currentVerse-1].numberInSurah+1;
     } else {
         currentVerse = 1;
+        surahVerse.innerHTML = "<div>"+currentSurah.ayahs[currentVerse-1].text+"</div>\
+        <div class='aq-verse-info'>\
+            <div>verse: "+currentVerse+"</div>\
+            <div>"+((currentSurah.ayahs[currentVerse-1].sajda)?'Sajda':'')+"</div>\
+            <div>Juz: "+currentSurah.ayahs[currentVerse-1].juz+"\
+        </div>";        
+        audioPlayer.removeAttribute("autoplay");
         audioPlayer.setAttribute("src",currentSurah.ayahs[currentVerse-1].audio);
         currentVerse = currentSurah.ayahs[currentVerse-1].numberInSurah+1;
-        audioPlayer.removeAttribute("autoplay");
     }
+
+
 }
+
+// event listeners
+
+// listens for track end
+audioPlayer.addEventListener("ended",function(e){
+    audioPlayer.setAttribute("autoplay","")
+    playAudio();
+});
+
+// language selection listener
+language.addEventListener('change',function(e){
+    let available_reciters = allReciters.filter(function(el){
+        return (el.language === e.target.value);
+    });
+
+    // populate reciters list
+    reciter.removeAttribute("disabled");
+    reciter.innerHTML = "";
+    reciter.innerHTML = "<option value='null' style='display:none;' selected>Select Reciter</option>";
+    for(reciter_ of available_reciters) {
+        let reciter_opt = "<option value="+reciter_.identifier+">"+reciter_.englishName+"</option>";
+        reciter.insertAdjacentHTML("beforeend",reciter_opt);
+    }
+});
+
+reciter.addEventListener('change',function(e) {
+    found_reciter = allReciters.filter(function(el){
+        return (el.identifier === e.target.value);
+    })
+    selectedReciter = found_reciter[0];
+    getAudioQuran();
+});
+
+chapter.addEventListener('change',function(e){
+    currentSurah.number = e.target.value;
+    getAudioQuran();
+})
+

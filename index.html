@@ -9,32 +9,28 @@
     <style>
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: monospace;
         }
         body {
             margin: 0;
             padding: 0;
-            width: 100%;
-        }
-        .bbody {
-            margin: 0;
-            padding: 0;
-            width: 100%;
+            width: 400px;
         }
         .aq-container {
             background-color: #eee;
             padding: 12px;
-            width: 400px;
         }
 
         .aq-title > h2 {
             padding: 12px;
-            border-radius: 7px;
             background-color: dodgerblue;
             color: white;
+            text-align: center;
         }
 
         .aq-user-options {
-            margin-top: 20px;
             padding: 20px;
             width: 100%;
             flex-wrap: wrap;
@@ -67,42 +63,90 @@
 
         .aq-player-container audio {
             width: 100%;
-            padding: 20px 0;
             background-color: rgb(241,243,244);
-            border-radius: 7px;
+            border-radius: 0 0 7px 7px;
             box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.2);
+        }
+
+        .aq-player-dashboard {
+            padding: 20px 12px;
+            border-radius: 7px 7px 0 0;
+            background-color: rgb(241,243,244);
+            box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.2);
+        }
+
+        #aq-chapter-name {
+            text-align: center;
+        }
+
+        #aq-chapter-name > div:nth-child(2)
+        {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 12px;
+            margin-top: 12px;
+        }
+
+        #aq-chapter-verse {
+            margin-top: 20px;
+        }
+
+        .aq-chapter-info hr {
+            margin-top: 20px;
+            border: none;
+            border-top: 1px solid rgba(0,0,0,0.2);
+        }
+
+        #aq-chapter-verse > div:first-child {
+            text-align: center;
+            line-height: 25px;
+        }
+        #aq-chapter-verse > .aq-verse-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            padding: 0 10px;
         }
             
     </style>
 </head>
 <body>
+    <div class="aq-title">
+        <h2>Audio Quran</h2>
+    </div>
     <div class="aq-container">
-        <div class="aq-title">
-            <h2>Audio Quran</h2>
-        </div>
         <div class="aq-user-options">
             <h3 style="text-align:center;">Select below options</h3>
-            <div class="aq-select-reciter">
-                <select id="aq-reciter" class="dropdown">
-                    <option value="null" selected style="display: none;">Select Reciter</option>
-                </select>
-            </div>
             <div class="aq-select-language">
                 <select id="aq-language" class="dropdown">
                     <option value="null" selected style="display: none;">Select Language</option>
                 </select>
             </div>
+            <div class="aq-select-reciter">
+                <select id="aq-reciter" class="dropdown" disabled title="select language first">
+                    <option value="null" selected style="display: none;">Select Reciter</option>
+                </select>
+            </div>
             <div class="aq-select-chapter">
                 <select id="aq-chapter" class="dropdown">
-                    <option value="null" selected style="display: none;">Select Parah</option>
+                    <option value="null" selected style="display: none;">Select Chapter</option>
                 </select>
 
             </div>
         </div>
         <div class="aq-player-container">
             <div class="aq-player-dashboard">
-                <div id="aq-chapter-info"></div>
-                <div id="aq-chapter-info"></div>
+                <div class="aq-chapter-info">
+                    <div id="aq-chapter-name">Al Fatiha  -  Meccan</div>
+                    <hr>
+                    <div id="aq-chapter-verse">
+                        الحمدُلِلہَ ربَ العالمین - 1
+                    </div>
+                </div>
+                <div class="aq-reciter-info">
+                    <div id="aq-reciter-name"></div>
+                    <div id="aq-language-name"></div>
+                </div>
             </div>
             <audio id="aq-player" controls autoplay src=""></audio>
         </div>
