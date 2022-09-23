@@ -4,9 +4,100 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Extension</title>
+    <title></title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        .aq-container {
+            background-color: #eee;
+            padding: 12px;
+            width: 400px;
+        }
+
+        .aq-title > h2 {
+            padding: 12px;
+            border-radius: 7px;
+            background-color: dodgerblue;
+            color: white;
+        }
+
+        .aq-user-options {
+            margin-top: 20px;
+            padding: 20px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .aq-container .dropdown {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #fff;
+            border: none;
+            outline: none;
+            border-radius: 7px;
+            color: black;
+            box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+
+        .aq-select-reciter,
+        .aq-select-language,
+        .aq-select-chapter {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .aq-player-container {
+            margin-top: 20px;
+            padding: 20px 12px;
+        }
+
+        .aq-player-container audio {
+            width: 100%;
+            padding: 20px 0;
+            background-color: rgb(241,243,244);
+            border-radius: 7px;
+            box-shadow: 1px 1px 4px 0 rgba(0,0,0,0.2);
+        }
+            
+    </style>
 </head>
 <body>
-    it islkdjflaksd flaksf
+    <div class="aq-container">
+        <div class="aq-title">
+            <h2>Audio Quran</h2>
+        </div>
+        <div class="aq-user-options">
+            <h3 style="text-align:center;">Select below options</h3>
+            <div class="aq-select-reciter">
+                <select id="aq-reciter" class="dropdown">
+                    <option value="null" selected style="display: none;">Select Reciter</option>
+                </select>
+            </div>
+            <div class="aq-select-language">
+                <select id="aq-language" class="dropdown">
+                    <option value="null" selected style="display: none;">Select Language</option>
+                </select>
+            </div>
+            <div class="aq-select-chapter">
+                <select id="aq-chapter" class="dropdown">
+                    <option value="null" selected style="display: none;">Select Parah</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="aq-player-container">
+            <audio id="aq-player" controls autoplay src="https://cdn.islamic.network/quran/audio/128/ar.alafasy/262.mp3"></audio>
+        </div>
+    </div>
+    <script src="js/audio-quran.js"></script>
 </body>
 </html>
