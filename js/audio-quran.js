@@ -7,16 +7,15 @@ var reciter = document.querySelector("#aq-reciter");
 var language = document.querySelector("#aq-language");
 var chapter = document.querySelector("#aq-chapter");
 var audioPlayer = document.querySelector("#aq-player");
-var selectedChapter = 1;
 var selectedReciter = "ur.khan";
 var currentSurah = {
-  "number":1
+  "number":113
 };
 var currentVerse = 1;
 
 audioPlayer.addEventListener("ended",function(e){
-  currentVerse = currentSurah.ayahs[currentVerse-1].number+1;
-  audioPlayer.setAttribute("src",currentSurah.ayahs[currentVerse-1].audio);
+    audioPlayer.setAttribute("autoplay","")
+    playAudio();
 });
 
 const chapters = [
@@ -522,12 +521,22 @@ function getAudioQuran() {
       return;
     }
 
+    console.log(req.responseText)
     let data = JSON.parse(req.responseText).data;
     currentSurah = data;
-    for(url of data.ayahs) {
-      audioPlayer.setAttribute("src",url.audio);
-    }
-    console.log(data)
+    audioPlayer.setAttribute("src",data.ayahs[currentVerse-1].audio);
+    currentVerse++;
   }
 }
 
+function playAudio() {
+    if(currentVerse<currentSurah.numberOfAyahs) {
+        currentVerse = currentSurah.ayahs[currentVerse-1].numberInSurah+1;
+        audioPlayer.setAttribute("src",currentSurah.ayahs[currentVerse-1].audio);
+    } else {
+        currentVerse = 1;
+        audioPlayer.setAttribute("src",currentSurah.ayahs[currentVerse-1].audio);
+        currentVerse = currentSurah.ayahs[currentVerse-1].numberInSurah+1;
+        audioPlayer.removeAttribute("autoplay");
+    }
+}
